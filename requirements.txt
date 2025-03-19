@@ -1,0 +1,5 @@
+scapy>=2.4.5
+paramiko>=2.11.0
+python-nmap>=0.7.1
+Jinja2>=3.1.2
+tqdm>=4.64.1

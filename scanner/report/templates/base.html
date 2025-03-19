@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>网络安全扫描报告</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2em; }
+        .host-card { border: 1px solid #ddd; padding: 1em; margin: 1em 0; }
+        .critical { color: #dc3545; }
+        .high { color: #fd7e14; }
+        .medium { color: #ffc107; }
+        .vuln-list { list-style-type: square; }
+        .timestamp { color: #6c757d; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>扫描报告</h1>
+    <div class="timestamp">生成时间: {{ scan_time }}</div>
+    
+    {% for host in results %}
+    <div class="host-card">
+        <h2>{{ host.ip }}</h2>
+        <p>开放端口: {{ host.ports|join(', ') }}</p >
+        
+        {% if host.vulnerabilities %}
+        <h3>发现漏洞 ({{ host.vulnerabilities|length }}个)</h3>
+        <ul class="vuln-list">
+            {% for vuln in host.vulnerabilities %}
+            <li class="{{ vuln.severity }}">{{ vuln.description }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+</body>
+</html>
