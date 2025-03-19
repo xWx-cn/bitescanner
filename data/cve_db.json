@@ -1,8 +1,8 @@
 {
     "Apache": {
         "pattern": "Server: Apache/(\\d+\\.\\d+\\.\\d+)",
-        "vulnerable": ["2.4.49"],
-        "cves": ["CVE-2021-41773"]
+        "vulnerable": ["2.2.14","2.4.49"],
+        "cves": ["CVE-2011-3368","CVE-2021-41773"]
     },
     "OpenSSH": {
         "pattern": "OpenSSH_(\\d+\\.\\d+)",
