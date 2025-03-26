@@ -3,14 +3,13 @@ from scanner.modules.host_discovery import HostDiscovery
 
 class TestHostDiscovery:
     @pytest.mark.parametrize("target,expected", [
-        ("127.0.0.1", True),
-        ("invalid_ip", False)
+        ("192.168.56.101", True),    # 单IP测试
+        ("192.168.56.0/30", 2),      # CIDR测试（期望2个主机）
+        ("invalid_ip", False)        # 无效IP测试
     ])
-    def test_icmp_ping(self, target, expected):
-        result = HostDiscovery(target)._icmp_ping()
-        assert bool(result) == expected
-
-    def test_arp_scan(self):
-        # 需在测试环境中设置已知设备
-        targets = HostDiscovery("192.168.1.0/24").discover()
-        assert isinstance(targets, list)
+    def test_discover(self, target, expected):
+        result = HostDiscovery(target).discover()
+        if isinstance(expected, bool):
+            assert bool(result) == expected
+        else:
+            assert len(result) == expected

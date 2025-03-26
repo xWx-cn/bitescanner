@@ -1,10 +1,14 @@
-import logging
+import os
 import ipaddress
-from tqdm import tqdm
+import logging
+from typing import Union
 
-def setup_logger(name):
+def setup_logger(name: str, log_level: int = logging.INFO) -> logging.Logger:
     """配置日志记录器"""
     logger = logging.getLogger(name)
+    if logger.handlers:  # 避免重复添加handler
+        return logger
+    
     handler = logging.StreamHandler()
     formatter = logging.Formatter(
         '%(asctime)s [%(levelname)s] %(message)s',
@@ -12,24 +16,27 @@ def setup_logger(name):
     )
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(log_level)
     return logger
 
-def validate_ip(ip):
-    """验证IP地址有效性"""
+def validate_ip(ip: str) -> bool:
+    """验证IPv4/IPv6地址有效性"""
     try:
         ipaddress.ip_address(ip)
         return True
     except ValueError:
         return False
 
-def progress_bar(iterable, desc=None):
-    """带进度条的迭代器"""
-    return tqdm(iterable, 
-               desc=desc, 
-               bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}')
-
-def format_duration(seconds):
-    """格式化时间间隔"""
-    m, s = divmod(seconds, 60)
-    return f"{int(m)}分{int(s)}秒"
+def parse_ports(port_str: Union[str, List[int]]) -> List[int]:
+    """将端口字符串解析为列表"""
+    if isinstance(port_str, list):
+        return port_str
+        
+    ports = []
+    for part in port_str.split(','):
+        if '-' in part:
+            start, end = map(int, part.split('-'))
+            ports.extend(range(start, end+1))
+        else:
+            ports.append(int(part))
+    return ports
